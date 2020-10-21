@@ -1,3 +1,4 @@
+import discord
 from discord.ext import commands
 from discord.ext.commands import Bot, HelpCommand
 
@@ -6,7 +7,9 @@ from commands.moderation import Moderation
 from commands.user import User
 from util.loader import cfg, pingPair, moderatorRoles
 
-client = Bot(command_prefix=cfg['prefix'], case_insensitive=True)
+intents = discord.Intents.default()
+intents.members = True
+client = Bot(command_prefix=cfg['prefix'], case_insensitive=True, intents=intents)
 
 
 @client.event
