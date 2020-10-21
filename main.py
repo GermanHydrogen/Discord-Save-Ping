@@ -6,7 +6,7 @@ from commands.moderation import Moderation
 from commands.user import User
 from util.loader import cfg, pingPair, moderatorRoles
 
-client = Bot(command_prefix="$", case_insensitive=True)
+client = Bot(command_prefix=cfg['prefix'], case_insensitive=True)
 
 
 @client.event
