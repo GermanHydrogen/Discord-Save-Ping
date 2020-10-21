@@ -40,12 +40,12 @@ class Moderation(commands.Cog, name='Moderation Commands'):
         if not check_moderator(ctx.message.author, guild.id, self.moderatorRoles):
             raise commands.errors.MissingRole
 
-        match = [x for x in guild.roles if x.name == role]
-        if len(match) == 1:
-            user = "\n".join(x.name + '#' + x.discriminator + "\t" + x.mention for x in match[0].members)
-
-            embed = discord.Embed(title="Members of **" + match[0].name + "**", type='article', color=match[0].colour,
-                                  description="**Found " + str(len(match[0].members)) + " User**\n\n" + user)
+        match = discord.utils.get(guild.roles, name=role)
+        if match:
+            user = "\n".join(x.name + '#' + x.discriminator + "\t" + x.mention for x in match.members)
+            print(match.members)
+            embed = discord.Embed(title="Members of **" + match.name + "**", type='article', color=match.colour,
+                                  description="**Found " + str(len(match.members)) + " User**\n\n" + user)
             await ctx.channel.send(embed=embed)
 
         else:

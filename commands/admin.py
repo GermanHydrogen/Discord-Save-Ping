@@ -1,4 +1,5 @@
 import re
+import discord
 from discord.ext import commands
 from util.util import addPingPair, writeModeratorRoles, getClientRolePosition
 from discord.ext.commands import has_permissions
@@ -83,9 +84,9 @@ class Managment(commands.Cog, name='Admin Commands'):
     async def setModeratorRole(self, ctx, role):
         global moderatorRoles
         guild = ctx.message.guild
-        match = [x for x in guild.roles if x.name == role]
 
-        if len(match) == 1:
+        match = discord.utils.get(guild.roles, name=role)
+        if match:
             if moderatorRoles is None:
                 moderatorRoles = {guild.id: role}
             else:

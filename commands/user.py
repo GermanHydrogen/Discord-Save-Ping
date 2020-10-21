@@ -1,3 +1,4 @@
+import discord
 from discord import errors
 from discord.ext import commands
 from util.util import ping_has_permission
@@ -11,8 +12,8 @@ class User(commands.Cog, name='User Commands'):
     @commands.command(help='Pings the specified role', usage='[role name]', category='User')
     async def ping(self, ctx, role):
         guild = ctx.message.guild
-        match = [x for x in guild.roles if x.name == role]
-        if len(match) == 1:
+        match = discord.utils.get(guild.roles, name=role)
+        if match:
             if ping_has_permission(ctx.message.author.roles, str(match[0]), self.pingPair[ctx.message.guild.id]):
                 preState = match[0].mentionable
                 try:
