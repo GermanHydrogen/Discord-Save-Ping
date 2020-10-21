@@ -8,3 +8,15 @@ if os.path.isfile(path + '/config.yml'):
         cfg = yaml.safe_load(ymlfile)
 else:
     exit()
+
+if os.path.isfile(path + '/pingPair.yml'):
+    with open(path + "/pingPair.yml", 'r') as ymlfile:
+        pingPair = yaml.safe_load(ymlfile)
+else:
+    pingPair = {}
+
+if os.path.isfile(path + '/moderator.yml'):
+    with open(path + "/moderator.yml", 'r') as ymlfile:
+        moderatorRoles = yaml.safe_load(ymlfile)
+else:
+    moderatorRoles = {}
