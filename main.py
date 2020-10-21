@@ -25,7 +25,7 @@ async def on_command_error(ctx, error):
         raise error
 
 
-@client.command(description='Pings the specified role', usage='ping [role name]')
+@client.command(help='Pings the specified role', usage='[role name]', category='User')
 async def ping(ctx, role):
     guild = ctx.message.guild
     match = [x for x in guild.roles if x.name == role]
@@ -42,8 +42,9 @@ async def ping(ctx, role):
     await ctx.message.delete()
 
 
-@client.command(description='Adds a ping rule (Admin Only)',
-                usage='addRule [mention role 1] [relation] [mention role] 2 | relation can be ->, <-, <->')
+@client.command(help='Adds a ping rule',
+                usage='[mention role 1] [relation] [mention role 2]  | relation can be ->, <-, <->',
+                category='Admin')
 @has_permissions(administrator=True)
 async def addRule(ctx):
     guild = ctx.message.guild.id
@@ -83,7 +84,7 @@ async def addRule(ctx):
     await ctx.message.delete()
 
 
-@client.command(description='Shows all ping rules for this guild (Moderators only)', usage='printRules')
+@client.command(help='Shows all ping rules for this guild (Moderators only)', usage='')
 async def printRules(ctx):
     guild = ctx.message.guild.id
     # Check Permission
@@ -106,8 +107,9 @@ async def printRules(ctx):
     await ctx.message.delete()
 
 
-@client.command(description='Set Moderator-Role (needed for $members and $printRules) (Admin Only)',
-                usage='addModeratorRole [role name]')
+@client.command(help='Set Moderator-Role (needed for $members and $printRules)',
+                usage='[role name]',
+                category='Admin')
 @has_permissions(administrator=True)
 async def setModeratorRole(ctx, role):
     global moderatorRoles
@@ -128,7 +130,7 @@ async def setModeratorRole(ctx, role):
     await ctx.message.delete()
 
 
-@client.command(description='Shows all members of a role (Moderators only)', usage='members [role name]')
+@client.command(help='Shows all members of a role (Moderators only)', usage='[role name]')
 async def members(ctx, role):
     guild = ctx.message.guild
     # Check Permission
