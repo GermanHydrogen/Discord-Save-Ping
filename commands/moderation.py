@@ -9,7 +9,7 @@ class Moderation(commands.Cog, name='Moderation Commands'):
         self.pingPair = pingPair
         self.moderatorRoles = moderatorRoles
 
-    @commands.command(help='Shows all ping rules for this guild (Moderators only)', usage='')
+    @commands.command(help='Shows all ping rules for this guild', usage='')
     async def printRules(self, ctx):
         guild = ctx.message.guild.id
         # Check Permission
@@ -33,7 +33,7 @@ class Moderation(commands.Cog, name='Moderation Commands'):
 
         await ctx.message.delete()
 
-    @commands.command(help='Shows all members of a role (Moderators only)', usage='[role name]')
+    @commands.command(help='Shows all members of a role', usage='[role name]')
     async def members(self, ctx, role):
         guild = ctx.message.guild
         # Check Permission
