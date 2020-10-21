@@ -1,6 +1,6 @@
 import re
 from discord.ext import commands
-from util.util import addPingPair, writeModeratorRoles
+from util.util import addPingPair, writeModeratorRoles, getClientRolePosition
 from discord.ext.commands import has_permissions
 
 
@@ -15,30 +15,54 @@ class Managment(commands.Cog, name='Admin Commands'):
                       category='Admin')
     @has_permissions(administrator=True)
     async def addRule(self, ctx):
-        guild = ctx.message.guild.id
+        guild = ctx.message.guild
+        clientMember = guild.get_member(self.client.user.id)
+
         msg = ctx.message.content.replace('$addRule', "").strip()
         mentions = ctx.message.role_mentions
         if len(mentions) != 2:
             await ctx.channel.send(ctx.message.author.mention + " Please give two Roles as mentions", delete_after=5)
+            await ctx.message.delete()
+            return
 
         relation = msg.replace(mentions[0].mention, "").replace(mentions[1].mention, "").strip()
 
         if relation == '':
             relation = ' '
 
-        print(msg.split(relation))
-
         # Order
-        mentions = {str(x.id): x.name for x in mentions}
+        mentions = {str(x.id): x for x in mentions}
         mentions = [mentions[re.sub("[^0-9]", "", x)] for x in msg.split(relation)]
 
         if relation == ' ' or relation == '->':
-            addPingPair(self.pingPair, guild, mentions[0], mentions[1])
+            if mentions[1].position < getClientRolePosition(clientMember):
+                addPingPair(self.pingPair, guild.id, mentions[0].name, mentions[1].name)
+            else:
+                await ctx.channel.send(
+                    ctx.message.author.mention + " Bot has to be higher in the role hierarchy, as the target role",
+                    delete_after=5)
+                await ctx.message.delete()
+                return
         elif relation == '<-':
-            addPingPair(self.pingPair, guild, mentions[1], mentions[0])
+            if mentions[0].position < getClientRolePosition(clientMember):
+                addPingPair(self.pingPair, guild.id, mentions[1].name, mentions[0].name)
+            else:
+                await ctx.channel.send(
+                    ctx.message.author.mention + " Bot has to be higher in the role hierarchy, as the target role",
+                    delete_after=5)
+                await ctx.message.delete()
+                return
         elif relation == '<->':
-            addPingPair(self.pingPair, guild, mentions[1], mentions[0])
-            addPingPair(self.pingPair, guild, mentions[0], mentions[1])
+            pos = getClientRolePosition(clientMember)
+            if mentions[0].position < pos and mentions[1].position < pos:
+                addPingPair(self.pingPair, guild.id, mentions[1].name, mentions[0].name)
+                addPingPair(self.pingPair, guild.id, mentions[0].name, mentions[1].name)
+            else:
+                await ctx.channel.send(
+                    ctx.message.author.mention + " Bot has to be higher in the role hierarchy, as the target role",
+                    delete_after=5)
+                await ctx.message.delete()
+                return
         else:
             await ctx.channel.send(
                 ctx.message.author.mention + " You have to give an relation between the roles (->, <-, <->)",
@@ -46,10 +70,10 @@ class Managment(commands.Cog, name='Admin Commands'):
             await ctx.message.delete()
             return
 
-        await ctx.channel.send(ctx.message.author.mention + " The Relation: {} {} {} has been saved".format(mentions[0],
+        await ctx.channel.send(ctx.message.author.mention + " The Relation: {} {} {} has been saved".format(mentions[0].name,
                                                                                                             relation,
                                                                                                             mentions[
-                                                                                                                1]))
+                                                                                                                1].name))
         await ctx.message.delete()
 
     @commands.command(help='Set Moderator-Role (needed for $members and $printRules)',

@@ -1,5 +1,7 @@
 import os
 import yaml
+import codecs
+import discord
 
 path = os.path.abspath(os.curdir)
 
@@ -19,27 +21,37 @@ def check_moderator(user, guild, moderatorroles):
         return 'Moderator' in [x.name for x in user.roles] or user.guild_permissions.administrator
 
 
-def addPingPair(pingpairs, guild,role, target):
-    if guild in pingpairs.keys():
-        if role in pingpairs[guild].keys():
-            if target not in pingpairs[guild][role]:
-                pingpairs[guild][role].append(target)
-            else:
-                return
-        else:
-            pingpairs[guild][role] = [target]
-    else:
-        pingpairs[guild] = {role: [target]}
-    print(pingpairs)
+def getClientRolePosition(client):
+    for x in client.roles:
+        if x.name != '@everyone':
+            if len(x.members) == 1 and x.members[0] == client:
+                return x.position
+    raise discord.InvalidData
 
+
+def addPingPair(pingpairs, guild,role, target):
+    if pingpairs is not None:
+        if guild in pingpairs.keys():
+            if role in pingpairs[guild].keys():
+                if target not in pingpairs[guild][role]:
+                    pingpairs[guild][role].append(target)
+                else:
+                    return
+            else:
+                pingpairs[guild][role] = [target]
+        else:
+            pingpairs[guild] = {role: [target]}
+    else:
+        pingpairs = {guild: {role: [target]}}
     writePingPair(pingpairs)
 
 
 def writePingPair(pingpairs):
-    with open(path + "/configuration/pingPair.yml", 'w') as ymlfile:
-        yaml.dump(pingpairs, ymlfile)
+    with codecs.open(path + "/configuration/pingPair.yml", 'w', "utf-8") as ymlfile:
+        print(yaml.dump(pingpairs, allow_unicode=True))
+        yaml.dump(pingpairs, ymlfile, allow_unicode=True)
 
 
 def writeModeratorRoles(moderatorroles):
-    with open(path + "/configuration/moderator.yml", 'w') as ymlfile:
-        yaml.dump(moderatorroles, ymlfile)
+    with codecs.open(path + "/configuration/moderator.yml", 'w', "utf-8") as ymlfile:
+        yaml.dump(moderatorroles, ymlfile, allow_unicode=True)

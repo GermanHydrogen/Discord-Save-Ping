@@ -1,5 +1,6 @@
 import os
 import yaml
+import codecs
 
 path = os.path.abspath(os.curdir)
 
@@ -11,13 +12,13 @@ else:
 
 
 if os.path.isfile(path + '/configuration/pingPair.yml'):
-    with open(path + "/configuration/pingPair.yml", 'r') as ymlfile:
+    with codecs.open(path + "/configuration/pingPair.yml", 'r', "utf-8") as ymlfile:
         pingPair = yaml.safe_load(ymlfile)
 else:
     pingPair = {}
 
 if os.path.isfile(path + '/configuration/moderator.yml'):
-    with open(path + "/configuration/moderator.yml", 'r') as ymlfile:
+    with codecs.open(path + "/configuration/moderator.yml", 'r', "utf-8") as ymlfile:
         moderatorRoles = yaml.safe_load(ymlfile)
 else:
     moderatorRoles = {}
