@@ -1,6 +1,6 @@
 # Discord-Save-Ping
 A simple Discord Bot with a save reworked ping system. It's using the discord.py package by Rapptz.
-<br><br>
+<br>
 This bot is part of the german multi-gaming discord community Rosenrudel: https://discord.gg/ep8FcXT
 
 ## Usage
@@ -8,14 +8,14 @@ In this guide, the standard command prefix '$' is used.
 This can be changed in the config file.
 ### User Level
 #### Ping
-`$ping [role name]` pings the given role.
+`$ping [role name (without "@")]` pings the given role.
 
 The roles, which are pingable from which role is determined by
 the configuration taken by the admin with `addRule`
 
 ### Moderator Level
 #### Member
-`$member [role name]` gives a member list of the given role.
+`$members [role name]` gives a member list of the given role.
 
 ----
 #### Print Rules
@@ -23,7 +23,12 @@ the configuration taken by the admin with `addRule`
 
 ### Admin Level
 #### Set Moderator Role
-`$setModeratorRole [role name]` sets the moderator role, which is required to use the moderator level commands. The default role name for the moderator role is 'moderator'.
+`$addModeratorRole [role name]` sets the moderator role, which is required to use the moderator level commands. The default role name for the moderator role is 'moderator'.
+
+----
+
+#### Remove Moderator Role
+`$removeModeratorRole [role name]` removes a moderator role from the system.
 
 ----
 
@@ -34,7 +39,7 @@ the configuration taken by the admin with `addRule`
 
 
 
-##### Bsp
+##### Example
 - `$addRule @Helper -> @Beginner`, enables the ping command for @Helper to ping @Beginner
 - `$addRule @Helper <- @Beginner`, enables the ping command for @Beginners to ping @Helper
 - `$addRule @Helper <-> @Beginner`, enables the ping command for both to ping each other
