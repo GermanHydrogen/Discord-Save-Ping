@@ -6,8 +6,8 @@ import discord
 path = os.path.abspath(os.curdir)
 
 
-def ping_has_permission(author_roles, target, pingpairs):
-    author_roles = [x.name for x in author_roles]
+def ping_has_permission(author_roles: list, target: int, pingpairs: dict):
+    author_roles = [x.id for x in author_roles]
     for x in pingpairs.items():
         if x[0] in author_roles and target in x[1]:
             return True
@@ -53,7 +53,6 @@ def addPingPair(pingpairs, guild, role, target):
 
 def writePingPair(pingpairs):
     with codecs.open(path + "/configuration/pingPair.yml", 'w', "utf-8") as ymlfile:
-        print(yaml.dump(pingpairs, allow_unicode=True))
         yaml.dump(pingpairs, ymlfile, allow_unicode=True)
 
 

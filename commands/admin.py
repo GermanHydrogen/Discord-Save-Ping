@@ -37,7 +37,7 @@ class Managment(commands.Cog, name='Admin Commands'):
 
         if relation == ' ' or relation == '->':
             if mentions[1].position < getClientRolePosition(clientMember):
-                addPingPair(self.pingPair, guild.id, mentions[0].name, mentions[1].name)
+                addPingPair(self.pingPair, guild.id, mentions[0].id, mentions[1].id)
             else:
                 await ctx.channel.send(
                     ctx.message.author.mention + " Bot has to be higher in the role hierarchy, as the target role",
@@ -46,7 +46,7 @@ class Managment(commands.Cog, name='Admin Commands'):
                 return
         elif relation == '<-':
             if mentions[0].position < getClientRolePosition(clientMember):
-                addPingPair(self.pingPair, guild.id, mentions[1].name, mentions[0].name)
+                addPingPair(self.pingPair, guild.id, mentions[1].id, mentions[0].id)
             else:
                 await ctx.channel.send(
                     ctx.message.author.mention + " Bot has to be higher in the role hierarchy, as the target role",
@@ -56,8 +56,8 @@ class Managment(commands.Cog, name='Admin Commands'):
         elif relation == '<->':
             pos = getClientRolePosition(clientMember)
             if mentions[0].position < pos and mentions[1].position < pos:
-                addPingPair(self.pingPair, guild.id, mentions[1].name, mentions[0].name)
-                addPingPair(self.pingPair, guild.id, mentions[0].name, mentions[1].name)
+                addPingPair(self.pingPair, guild.id, mentions[1].id, mentions[0].id)
+                addPingPair(self.pingPair, guild.id, mentions[0].id, mentions[1].id)
             else:
                 await ctx.channel.send(
                     ctx.message.author.mention + " Bot has to be higher in the role hierarchy, as the target role",
@@ -71,10 +71,8 @@ class Managment(commands.Cog, name='Admin Commands'):
             await ctx.message.delete()
             return
 
-        await ctx.channel.send(ctx.message.author.mention + " The Relation: {} {} {} has been saved".format(mentions[0].name,
-                                                                                                            relation,
-                                                                                                            mentions[
-                                                                                                                1].name))
+        await ctx.channel.send(ctx.message.author.mention +
+                               " The Relation: {} ({}) {} {} ({}) has been saved".format(mentions[0].name, mentions[0].id, relation, mentions[1].name, mentions[1].id))
         await ctx.message.delete()
 
     @commands.command(help='Set Moderator-Role (needed for $members and $printRules)',
@@ -86,6 +84,8 @@ class Managment(commands.Cog, name='Admin Commands'):
 
         match = discord.utils.get(guild.roles, name=role)
         if match:
+            role = match.id
+
             if self.moderatorRoles is None:
                 self.moderatorRoles = {guild.id: [role]}
             elif guild.id in self.moderatorRoles.keys():
@@ -109,6 +109,8 @@ class Managment(commands.Cog, name='Admin Commands'):
 
         match = discord.utils.get(guild.roles, name=role)
         if match:
+            role = match.id
+
             if self.moderatorRoles is not None:
                 if guild.id in self.moderatorRoles.keys():
                     try:
@@ -122,6 +124,6 @@ class Managment(commands.Cog, name='Admin Commands'):
                     except ValueError:
                         pass
 
-        await ctx.channel.send(ctx.message.author.mention + " " + role + " is not registered as a "
+        await ctx.channel.send(ctx.message.author.mention + " " + role + " it is not registered as a "
                                                                          "moderator role.")
         await ctx.message.delete()

@@ -11,19 +11,19 @@ class Moderation(commands.Cog, name='Moderation Commands'):
 
     @commands.command(help='Shows all ping rules for this guild', usage='')
     async def printRules(self, ctx):
-        guild = ctx.message.guild.id
+        guild = ctx.message.guild
         # Check Permission
-        if not check_moderator(ctx.message.author, guild, self.moderatorRoles):
+        if not check_moderator(ctx.message.author, guild.id, self.moderatorRoles):
             raise commands.errors.MissingRole
 
-        if self.pingPair is None or guild not in self.pingPair.keys():
+        if self.pingPair is None or guild.id not in self.pingPair.keys():
             await ctx.channel.send(
                 ctx.message.author.mention + " There are currently no rules active in this guild.",
                 delete_after=5)
             await ctx.message.delete()
             return
 
-        output = "\n\n".join(["**" + x[0] + ":**\n" + "\n".join(["----> " + y for y in x[1]]) for x in
+        output = "\n\n".join(["**" + guild.get_role(int(x[0])).name + ":**\n" + "\n".join(["----> " + guild.get_role(int(y)).name for y in x[1]]) for x in
                               self.pingPair[ctx.message.guild.id].items()])
 
         embed = discord.Embed(title="**Ping Rules**", description=output, color=ctx.message.author.color)
