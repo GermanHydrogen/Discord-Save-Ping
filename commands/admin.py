@@ -89,7 +89,8 @@ class Managment(commands.Cog, name='Admin Commands'):
             if self.moderatorRoles is None:
                 self.moderatorRoles = {guild.id: [role]}
             elif guild.id in self.moderatorRoles.keys():
-                self.moderatorRoles[guild.id].append(role)
+                if role not in self.moderatorRoles[guild.id]:
+                    self.moderatorRoles[guild.id].append(role)
             else:
                 self.moderatorRoles[guild.id] = [role]
 
