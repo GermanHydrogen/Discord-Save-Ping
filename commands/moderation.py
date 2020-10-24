@@ -36,7 +36,12 @@ class Moderation(commands.Cog, name='Moderation Commands'):
         await ctx.message.delete()
 
     @commands.command(help='Shows all members of a role', usage='[role name]')
-    async def members(self, ctx, role):
+    async def members(self, ctx):
+        argv = ctx.message.content.split(" ")
+        if len(argv) < 2:
+            await ctx.channel.send(ctx.message.author.mention + " Please declare a role you want to ping!")
+        role = " ".join(argv[1:])
+
         guild = ctx.message.guild
         # Check Permission
         if not check_moderator(ctx.message.author, guild.id, self.moderatorRoles):

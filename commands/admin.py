@@ -79,7 +79,12 @@ class Managment(commands.Cog, name='Admin Commands'):
                       usage='[role name]',
                       category='Admin')
     @has_permissions(administrator=True)
-    async def addModeratorRole(self, ctx, role):
+    async def addModeratorRole(self, ctx):
+        argv = ctx.message.content.split(" ")
+        if len(argv) < 2:
+            await ctx.channel.send(ctx.message.author.mention + " Please declare a role you want to ping!")
+        role = " ".join(argv[1:])
+
         guild = ctx.message.guild
 
         match = discord.utils.get(guild.roles, name=role)
@@ -105,7 +110,12 @@ class Managment(commands.Cog, name='Admin Commands'):
                       usage='[role name]',
                       category='Admin')
     @has_permissions(administrator=True)
-    async def removeModeratorRole(self, ctx, role):
+    async def removeModeratorRole(self, ctx):
+        argv = ctx.message.content.split(" ")
+        if len(argv) < 2:
+            await ctx.channel.send(ctx.message.author.mention + " Please declare a role you want to ping!")
+        role = " ".join(argv[1:])
+
         guild = ctx.message.guild
 
         match = discord.utils.get(guild.roles, name=role)

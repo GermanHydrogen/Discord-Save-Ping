@@ -9,8 +9,13 @@ class User(commands.Cog, name='User Commands'):
         self.client = client
         self.pingPair = pingPair
 
-    @commands.command(help='Pings the specified role', usage='[role name]', category='User')
-    async def ping(self, ctx, role):
+    @commands.command(help='Pings the specified role', usage='[role name] (without "@")', category='User')
+    async def ping(self, ctx):
+        argv = ctx.message.content.split(" ")
+        if len(argv) < 2:
+            await ctx.channel.send(ctx.message.author.mention + " Please declare a role you want to ping!")
+        role = " ".join(argv[1:])
+
         guild = ctx.message.guild
         match = discord.utils.get(guild.roles, name=role)
         if match:
