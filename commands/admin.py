@@ -94,7 +94,7 @@ class Managment(commands.Cog, name='Admin Commands'):
                 self.moderatorRoles[guild.id] = [role]
 
             writeModeratorRoles(self.moderatorRoles)
-            await ctx.channel.send(ctx.message.author.mention + " " + ", ".join(self.moderatorRoles[guild.id]) + " are now the moderator roles.")
+            await ctx.channel.send(ctx.message.author.mention + " " + ", ".join([guild.get_role(x).name for x in self.moderatorRoles[guild.id]]) + " are now the moderator roles.")
         else:
             await ctx.channel.send(ctx.message.author.mention + " Role not Found", delete_after=5)
 
