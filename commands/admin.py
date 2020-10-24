@@ -118,7 +118,7 @@ class Managment(commands.Cog, name='Admin Commands'):
                         self.moderatorRoles[guild.id].remove(role)
                         writeModeratorRoles(self.moderatorRoles)
 
-                        await ctx.channel.send(ctx.message.author.mention + " " + role + " was removed.")
+                        await ctx.channel.send(ctx.message.author.mention + " " + guild.get_role(role).name + " was removed.")
                         await ctx.message.delete()
                         return
 
