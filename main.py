@@ -13,6 +13,12 @@ client = Bot(command_prefix=cfg['prefix'], case_insensitive=True, intents=intent
 
 
 @client.event
+async def on_ready():
+    game = discord.Game(name="https://github.com/GermanHydrogen/Discord-Save-Ping")
+    await client.change_presence(activity=game)
+
+
+@client.event
 async def on_command_error(ctx, error):
     if ctx.message.channel != "DMChannel" and ctx.message.channel != "GroupChannel":
         await ctx.message.delete()
