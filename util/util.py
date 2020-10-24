@@ -15,10 +15,15 @@ def ping_has_permission(author_roles, target, pingpairs):
 
 
 def check_moderator(user, guild, moderatorroles):
-    if guild in moderatorroles.keys():
-        return moderatorroles[guild] in [x.name for x in user.roles] or user.guild_permissions.administrator
+    if user.guild_permissions.administrator:
+        return True
+    elif guild in moderatorroles.keys():
+        for elem in moderatorroles[guild]:
+            if elem in [x.name for x in user.roles]:
+                return True
+        return False
     else:
-        return 'Moderator' in [x.name for x in user.roles] or user.guild_permissions.administrator
+        return 'Moderator' in [x.name for x in user.roles]
 
 
 def getClientRolePosition(client):
@@ -29,7 +34,7 @@ def getClientRolePosition(client):
     raise discord.InvalidData
 
 
-def addPingPair(pingpairs, guild,role, target):
+def addPingPair(pingpairs, guild, role, target):
     if pingpairs is not None:
         if guild in pingpairs.keys():
             if role in pingpairs[guild].keys():

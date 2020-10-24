@@ -9,7 +9,7 @@ class Managment(commands.Cog, name='Admin Commands'):
     def __init__(self, client, pingpair, moderatorroles):
         self.client = client
         self.pingPair = pingpair
-        self.moderationRoles = moderatorroles
+        self.moderatorRoles = moderatorroles
 
     @commands.command(help='Adds a ping rule',
                       usage='[mention role 1] [relation] [mention role 2]  | relation can be ->, <-, <->',
@@ -81,20 +81,47 @@ class Managment(commands.Cog, name='Admin Commands'):
                       usage='[role name]',
                       category='Admin')
     @has_permissions(administrator=True)
-    async def setModeratorRole(self, ctx, role):
-        global moderatorRoles
+    async def addModeratorRole(self, ctx, role):
         guild = ctx.message.guild
 
         match = discord.utils.get(guild.roles, name=role)
         if match:
-            if moderatorRoles is None:
-                moderatorRoles = {guild.id: role}
+            if self.moderatorRoles is None:
+                self.moderatorRoles = {guild.id: [role]}
+            elif guild.id in self.moderatorRoles.keys():
+                self.moderatorRoles[guild.id].append(role)
             else:
-                moderatorRoles[guild.id] = role
+                self.moderatorRoles[guild.id] = [role]
 
-            writeModeratorRoles(moderatorRoles)
-            await ctx.channel.send(ctx.message.author.mention + " " + role + " is now the moderator role.")
+            writeModeratorRoles(self.moderatorRoles)
+            await ctx.channel.send(ctx.message.author.mention + " " + ", ".join(self.moderatorRoles[guild.id]) + " are now the moderator roles.")
         else:
             await ctx.channel.send(ctx.message.author.mention + " Role not Found", delete_after=5)
 
+        await ctx.message.delete()
+
+    @commands.command(help='Remove Moderator-Role (needed for $members and $printRules)',
+                      usage='[role name]',
+                      category='Admin')
+    @has_permissions(administrator=True)
+    async def removeModeratorRole(self, ctx, role):
+        guild = ctx.message.guild
+
+        match = discord.utils.get(guild.roles, name=role)
+        if match:
+            if self.moderatorRoles is not None:
+                if guild.id in self.moderatorRoles.keys():
+                    try:
+                        self.moderatorRoles[guild.id].remove(role)
+                        writeModeratorRoles(self.moderatorRoles)
+
+                        await ctx.channel.send(ctx.message.author.mention + " " + role + " was removed.")
+                        await ctx.message.delete()
+                        return
+
+                    except ValueError:
+                        pass
+
+        await ctx.channel.send(ctx.message.author.mention + " " + role + " is not registered as a "
+                                                                         "moderator role.")
         await ctx.message.delete()
