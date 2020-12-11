@@ -1,15 +1,77 @@
 import re
 import discord
 from discord.ext import commands
-from util.util import addPingPair, writeModeratorRoles, getClientRolePosition
+from util.util import addPingPair, writeGuildRoles, getClientRolePosition
 from discord.ext.commands import has_permissions
 
 
 class Managment(commands.Cog, name='Admin Commands'):
-    def __init__(self, client, pingpair, moderatorroles):
+    def __init__(self, client, pingpair, guildroles):
         self.client = client
         self.pingPair = pingpair
-        self.moderatorRoles = moderatorroles
+        self.guildRoles = guildroles
+
+    @commands.command(help='Returns set default role',
+                      usage='',
+                      category='Admin')
+    async def defaultRole(self, ctx):
+        guild = ctx.message.guild
+
+        if self.guildRoles is None:
+            ctx.channel.send(ctx.message.author.mention + "There is no default role defined for this guild.")
+        elif guild.id not in self.guildRoles.keys():
+            ctx.channel.send(ctx.message.author.mention + "There is no default role defined for this guild.")
+        elif 'default' not in self.guildRoles[guild.id].keys():
+            ctx.channel.send(ctx.message.author.mention + "There is no default role defined for this guild.")
+        else:
+            try:
+                role = guild.get_role(self.guildRoles[guild.id]['default'])
+                await ctx.channel.send(ctx.message.author.mention + " "
+                                       "**{}** is the default role for this guild".format(role.name))
+            except:
+                ctx.channel.send(ctx.message.author.mention + "There is no default role defined for this guild.")
+
+        await ctx.message.delete()
+
+    @commands.command(help='Sets a default role. If no role is specified, the attribute default role is cleared!',
+                      usage='[role name] opt',
+                      category='Admin')
+    async def setDefaultRole(self, ctx):
+        argv = ctx.message.content.split(" ")
+        role = " ".join(argv[1:])
+
+        guild = ctx.message.guild
+
+        if role.strip() == "":
+            match = None
+        else:
+            match = discord.utils.get(guild.roles, name=role)
+
+        if match:   # Sets the default role
+            role = match.id
+
+            if self.guildRoles is None:
+                self.guildRoles = {guild.id: {'default': role}}
+            elif guild.id in self.guildRoles.keys():
+                self.guildRoles[guild.id]['default'] = role
+            else:
+                self.guildRoles[guild.id] = {'default': role}
+
+            writeGuildRoles(self.guildRoles)
+            await ctx.channel.send(ctx.message.author.mention + " " +
+                                   str(guild.get_role(
+                                       self.guildRoles[guild.id]['default']).name) + " is now the default role.")
+        elif role.strip() == "":    # Resets the default role
+            if self.guildRoles is not None:
+                if guild.id in self.guildRoles.keys():
+                    if 'default' in self.guildRoles[guild.id].keys():
+                        del self.guildRoles[guild.id]['default']
+                        writeGuildRoles(self.guildRoles)
+                        await ctx.channel.send(ctx.message.author.mention + " The default role was deleted.")
+        else:
+            await ctx.channel.send(ctx.message.author.mention + " Role not Found", delete_after=5)
+
+        await ctx.message.delete()
 
     @commands.command(help='Adds a ping rule',
                       usage='[mention role 1] [relation] [mention role 2]  | relation can be ->, <-, <->',
@@ -72,7 +134,10 @@ class Managment(commands.Cog, name='Admin Commands'):
             return
 
         await ctx.channel.send(ctx.message.author.mention +
-                               " The Relation: {} ({}) {} {} ({}) has been saved".format(mentions[0].name, mentions[0].id, relation, mentions[1].name, mentions[1].id))
+                               " The Relation: {} ({}) {} {} ({}) has been saved".format(mentions[0].name,
+                                                                                         mentions[0].id, relation,
+                                                                                         mentions[1].name,
+                                                                                         mentions[1].id))
         await ctx.message.delete()
 
     @commands.command(help='Set Moderator-Role (needed for $members and $printRules)',
@@ -91,16 +156,20 @@ class Managment(commands.Cog, name='Admin Commands'):
         if match:
             role = match.id
 
-            if self.moderatorRoles is None:
-                self.moderatorRoles = {guild.id: [role]}
-            elif guild.id in self.moderatorRoles.keys():
-                if role not in self.moderatorRoles[guild.id]:
-                    self.moderatorRoles[guild.id].append(role)
+            if self.guildRoles is None:
+                self.guildRoles = {guild.id: {'moderator': [role]}}
+            elif guild.id in self.guildRoles.keys():
+                if 'moderator' not in self.guildRoles[guild.id].keys():
+                    self.guildRoles[guild.id]['moderator'] = [role]
+                if role not in self.guildRoles[guild.id]['moderator']:
+                    self.guildRoles[guild.id]['moderator'].append(role)
             else:
-                self.moderatorRoles[guild.id] = [role]
+                self.guildRoles[guild.id] = {'moderator': [role]}
 
-            writeModeratorRoles(self.moderatorRoles)
-            await ctx.channel.send(ctx.message.author.mention + " " + ", ".join([guild.get_role(x).name for x in self.moderatorRoles[guild.id]]) + " are now the moderator roles.")
+            writeGuildRoles(self.guildRoles)
+            await ctx.channel.send(ctx.message.author.mention + " " + ", ".join(
+                [guild.get_role(x).name for x in
+                 self.guildRoles[guild.id]['moderator']]) + " are now the moderator roles.")
         else:
             await ctx.channel.send(ctx.message.author.mention + " Role not Found", delete_after=5)
 
@@ -122,13 +191,14 @@ class Managment(commands.Cog, name='Admin Commands'):
         if match:
             role = match.id
 
-            if self.moderatorRoles is not None:
-                if guild.id in self.moderatorRoles.keys():
+            if self.guildRoles is not None:
+                if guild.id in self.guildRoles.keys():
                     try:
-                        self.moderatorRoles[guild.id].remove(role)
-                        writeModeratorRoles(self.moderatorRoles)
+                        self.guildRoles[guild.id]['moderator'].remove(role)
+                        writeGuildRoles(self.guildRoles)
 
-                        await ctx.channel.send(ctx.message.author.mention + " " + guild.get_role(role).name + " was removed.")
+                        await ctx.channel.send(
+                            ctx.message.author.mention + " " + guild.get_role(role).name + " was removed.")
                         await ctx.message.delete()
                         return
 

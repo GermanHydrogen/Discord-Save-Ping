@@ -19,6 +19,6 @@ else:
 
 if os.path.isfile(path + '/configuration/moderator.yml'):
     with codecs.open(path + "/configuration/moderator.yml", 'r', "utf-8") as ymlfile:
-        moderatorRoles = yaml.safe_load(ymlfile)
+        guildRoles = yaml.safe_load(ymlfile)
 else:
-    moderatorRoles = {}
+    guildRoles = {}

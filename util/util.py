@@ -14,11 +14,11 @@ def ping_has_permission(author_roles: list, target: int, pingpairs: dict):
     return False
 
 
-def check_moderator(user, guild, moderatorroles):
+def check_moderator(user, guild, guildroles):
     if user.guild_permissions.administrator:
         return True
-    elif guild in moderatorroles.keys():
-        for elem in moderatorroles[guild]:
+    elif guild in guildroles.keys():
+        for elem in guildroles[guild]['moderator']:
             if elem in [x.name for x in user.roles]:
                 return True
         return False
@@ -56,6 +56,6 @@ def writePingPair(pingpairs):
         yaml.dump(pingpairs, ymlfile, allow_unicode=True)
 
 
-def writeModeratorRoles(moderatorroles):
+def writeGuildRoles(guildroles):
     with codecs.open(path + "/configuration/moderator.yml", 'w', "utf-8") as ymlfile:
-        yaml.dump(moderatorroles, ymlfile, allow_unicode=True)
+        yaml.dump(guildroles, ymlfile, allow_unicode=True)

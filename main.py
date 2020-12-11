@@ -5,7 +5,7 @@ from discord.ext.commands import Bot, HelpCommand
 from commands.admin import Managment
 from commands.moderation import Moderation
 from commands.user import User
-from util.loader import cfg, pingPair, moderatorRoles
+from util.loader import cfg, pingPair, guildRoles
 
 intents = discord.Intents.default()
 intents.members = True
@@ -35,8 +35,21 @@ async def on_command_error(ctx, error):
         raise error
 
 
+@client.event
+async def on_member_join(member):
+    guild = member.guild
+    if guildRoles is None:
+        pass
+    elif guild.id not in guildRoles.keys():
+        pass
+    elif 'default' not in guildRoles[guild.id].keys():
+        pass
+    else:
+        role = guild.get_role(guildRoles[guild.id]['default'])
+        await member.add_roles(role)
+
 client.add_cog(User(client, pingPair))
-client.add_cog(Moderation(client, pingPair, moderatorRoles))
-client.add_cog(Managment(client, pingPair, moderatorRoles))
+client.add_cog(Moderation(client, pingPair, guildRoles))
+client.add_cog(Managment(client, pingPair, guildRoles))
 
 client.run(cfg['token'])

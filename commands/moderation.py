@@ -4,10 +4,10 @@ from util.util import check_moderator
 
 
 class Moderation(commands.Cog, name='Moderation Commands'):
-    def __init__(self, client, pingPair, moderatorRoles):
+    def __init__(self, client, pingPair, guildroles):
         self.client = client
         self.pingPair = pingPair
-        self.moderatorRoles = moderatorRoles
+        self.moderatorRoles = guildroles
 
     @commands.command(help='Shows all ping rules for this guild', usage='')
     async def printRules(self, ctx):
@@ -50,7 +50,6 @@ class Moderation(commands.Cog, name='Moderation Commands'):
         match = discord.utils.get(guild.roles, name=role)
         if match:
             user = "\n".join(x.name + '#' + x.discriminator + "\t" + x.mention for x in match.members)
-            print(match.members)
             embed = discord.Embed(title="Members of **" + match.name + "**", type='article', color=match.colour,
                                   description="**Found " + str(len(match.members)) + " User**\n\n" + user)
             await ctx.channel.send(embed=embed)
