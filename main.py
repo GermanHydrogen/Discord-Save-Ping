@@ -18,12 +18,20 @@ async def on_ready():
     for guild_id in guildRoles:
         guild = client.get_guild(guild_id)
         if guild is None:
-            print(f"Error Guild not found: {guild_id}")
+            print(f"Error: Guild not found: {guild_id}")
         else:
             member = guild.get_member(client.user.id)
             if member is not None:
                 if not member.guild_permissions.manage_roles:
-                    print(f"Error Not sufficient permissions for {guild.name}")
+                    print(f"Error: Not sufficient permissions for {guild.name}")
+
+                role = guild.get_role(guildRoles[guild.id]['default'])
+                if not role:
+                    print(f"Error: Role {guildRoles[guild.id]['default']} not found for {guild.name}")
+                else:
+                    if member.top_role.position < role.position:
+                        print(f"Error: Bot role has to be higher then the default role "
+                              f"{role.name} in guild {guild.name}")
 
     print("Ready")
     game = discord.Game(name="https://github.com/GermanHydrogen/Discord-Save-Ping")
