@@ -14,6 +14,18 @@ client = Bot(command_prefix=cfg['prefix'], case_insensitive=True, intents=intent
 
 @client.event
 async def on_ready():
+
+    for guild_id in guildRoles:
+        guild = client.get_guild(guild_id)
+        if guild is None:
+            print(f"Error Guild not found: {guild_id}")
+        else:
+            member = guild.get_member(client.user.id)
+            if member is not None:
+                if not member.guild_permissions.manage_roles:
+                    print(f"Error Not sufficient permissions for {guild.name}")
+
+    print("Ready")
     game = discord.Game(name="https://github.com/GermanHydrogen/Discord-Save-Ping")
     await client.change_presence(activity=game)
 
