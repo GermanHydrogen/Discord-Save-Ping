@@ -94,6 +94,7 @@ async def on_command_error(ctx, error):
 @client.event
 async def on_member_join(member):
     guild = member.guild
+    logger.info(f"{member.name} in guild {guild.name} has joined.")
     if guildRoles is None:
         pass
     elif guild.id not in guildRoles.keys():
