@@ -1,5 +1,5 @@
 import discord
-from discord import errors
+from discord import errors, slash_command, Option
 from discord.ext import commands
 from util.util import ping_has_permission
 
@@ -10,37 +10,41 @@ class User(commands.Cog, name='User Commands'):
         self.pingPair = pingPair
         self.logger = logger
 
-    @commands.command(help='Pings the specified role', usage='[role name] (without "@")', category='User')
-    async def ping(self, ctx):
-        argv = ctx.message.content.split(" ")
-        if len(argv) < 2:
-            await ctx.channel.send(ctx.message.author.mention + " Please declare a role you want to ping!")
-        role = " ".join(argv[1:])
+    async def role_searcher(self, ctx: discord.AutocompleteContext):
+        roles = [role for role in self.pingPair[ctx.interaction.guild.id].values()]
 
-        guild = ctx.message.guild
+        roles = [discord.utils.get(ctx.interaction.guild.roles, id=role) for sublist in roles for role in sublist
+                 if ping_has_permission(ctx.interaction.user.roles, role, self.pingPair[ctx.interaction.guild.id])]
+
+        return [role.name for role in roles if role.name.lower().startswith(ctx.value.lower())]
+
+    @slash_command()
+    async def ping(self, ctx, role: Option(str, "Role", autocomplete=role_searcher)):
+        """Ping a role via the bot"""
+        guild = ctx.guild
         match = discord.utils.get(guild.roles, name=role)
         if match:
-            if ping_has_permission(ctx.message.author.roles, match.id, self.pingPair[ctx.message.guild.id]):
+            if ping_has_permission(ctx.author.roles, match.id, self.pingPair[ctx.guild.id]):
                 preState = match.mentionable
                 try:
                     await match.edit(mentionable=True)
                     try:
-                        await ctx.channel.send(match.mention)
-                        log = "Guild: " + str(ctx.message.guild.name).ljust(20) + "\t"
-                        log += "User: " + str(ctx.message.author).ljust(20) + "\t"
-                        log += "Channel:" + str(ctx.message.channel).ljust(20) + "\t"
-                        log += "Command: " + str(ctx.message.content).ljust(20) + "\t"
+                        await ctx.respond(match.mention)
+                        log = "Guild: " + str(ctx.guild.name).ljust(20) + "\t"
+                        log += "User: " + str(ctx.author).ljust(20) + "\t"
+                        log += "Channel:" + str(ctx.channel).ljust(20) + "\t"
+                        log += "Command: " + str(ctx.content).ljust(20) + "\t"
 
                         self.logger.info(log)
                     except:
                         pass
                     await match.edit(mentionable=preState)
                 except errors.Forbidden:
-                    await ctx.channel.send(ctx.message.author.mention + " Configuration Error, please contact your "
-                                                                        "Admin", delete_after=5)
+                    await ctx.respond(ctx.author.mention + " Configuration Error, please contact your "
+                                                           "Admin", delete_after=5)
             else:
-                await ctx.channel.send(ctx.message.author.mention + " You can't mention this role", delete_after=5)
+                await ctx.respond(ctx.author.mention + " You can't mention this role", delete_after=5)
         else:
-            await ctx.channel.send(ctx.message.author.mention + " Role not Found", delete_after=5)
+            await ctx.respond(ctx.author.mention + " Role not Found", delete_after=5)
 
-        await ctx.message.delete()
+        # await ctx.message.delete()
