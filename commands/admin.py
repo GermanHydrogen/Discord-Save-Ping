@@ -1,15 +1,12 @@
-import re
-import discord
 from discord import slash_command, Option
 from discord.commands import permissions
 from discord.ext import commands
 from discord.types.role import Role
 
 from util.util import addPingPair, writeGuildRoles, getClientRolePosition
-from discord.ext.commands import has_permissions
 
 
-class Managment(commands.Cog, name='Admin Commands'):
+class Management(commands.Cog, name='Admin Commands'):
     def __init__(self, client, pingpair, guildroles):
         self.client = client
         self.pingPair = pingpair
