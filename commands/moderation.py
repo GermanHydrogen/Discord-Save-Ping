@@ -32,7 +32,7 @@ class Moderation(commands.Cog, name='Moderation Commands'):
         embed = discord.Embed(title="**Ping Rules**", description=output, color=ctx.author.color)
         embed.set_author(name=ctx.author.display_name)
         embed.set_footer(text='[User with this role can ping] ----> [this role]',
-                         icon_url='https://media.discordapp.net/attachments/664892036171825156/665328124187115520/Logo_RR_2020.png?width=684&height=678')
+                         icon_url=guild.icon.url)
 
         await ctx.respond(embed=embed)
 

@@ -6,7 +6,7 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import Bot, HelpCommand
 
-from commands.admin import Managment
+from commands.admin import Management
 from commands.moderation import Moderation
 from commands.user import User
 from util.loader import cfg, pingPair, guildRoles
@@ -123,6 +123,6 @@ async def on_member_join(member):
 
 client.add_cog(User(client, pingPair, logger))
 client.add_cog(Moderation(client, pingPair, guildRoles))
-client.add_cog(Managment(client, pingPair, guildRoles))
+client.add_cog(Management(client, pingPair, guildRoles))
 
 client.run(cfg['token'])
