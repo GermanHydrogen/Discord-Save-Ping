@@ -40,28 +40,19 @@ class Managment(commands.Cog, name='Admin Commands'):
     async def set_default_role(self, ctx, role: Option(Role, "Role")):
         """Sets the default role."""
         guild = ctx.guild
+        role = role.id
 
-        if role is not None:  # Sets the default role
-            role = role.id
+        if self.guildRoles is None:
+            self.guildRoles = {guild.id: {'default': role}}
+        elif guild.id in self.guildRoles.keys():
+            self.guildRoles[guild.id]['default'] = role
+        else:
+            self.guildRoles[guild.id] = {'default': role}
 
-            if self.guildRoles is None:
-                self.guildRoles = {guild.id: {'default': role}}
-            elif guild.id in self.guildRoles.keys():
-                self.guildRoles[guild.id]['default'] = role
-            else:
-                self.guildRoles[guild.id] = {'default': role}
-
-            writeGuildRoles(self.guildRoles)
-            await ctx.respond(ctx.author.mention + " " +
-                              str(guild.get_role(
-                                  self.guildRoles[guild.id]['default']).name) + " is now the default role.")
-        else:  # Resets the default role
-            if self.guildRoles is not None:
-                if guild.id in self.guildRoles.keys():
-                    if 'default' in self.guildRoles[guild.id].keys():
-                        del self.guildRoles[guild.id]['default']
-                        writeGuildRoles(self.guildRoles)
-                        await ctx.respond(ctx.author.mention + " The default role was deleted.")
+        writeGuildRoles(self.guildRoles)
+        await ctx.respond(ctx.author.mention + " " +
+                          str(guild.get_role(
+                              self.guildRoles[guild.id]['default']).name) + " is now the default role.")
 
     @slash_command(guild_ids=[621724759645749258], default_permission=False)
     @permissions.is_owner()

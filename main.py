@@ -35,7 +35,6 @@ discord_logger.addHandler(discord_handler)
 
 @client.event
 async def on_ready():
-
     for guild_id in guildRoles:
         guild = client.get_guild(guild_id)
         if guild is None:
@@ -48,16 +47,16 @@ async def on_ready():
                     print(f"Error: Not sufficient permissions for {guild.name}")
                     logger.error(f"Error: Not sufficient permissions for {guild.name}")
 
-                role = guild.get_role(guildRoles[guild.id]['default'])
-                if not role:
-                    print(f"Error: Role {guildRoles[guild.id]['default']} not found for {guild.name}")
-                    logger.error("Error: Role {guildRoles[guild.id]['default']} not found for {guild.name}")
-                else:
-                    if member.top_role.position < role.position:
-                        print(f"Error: Bot role has to be higher then the default role "
-                              f"{role.name} in guild {guild.name}")
-                        logger.error("Error: Bot role has to be higher then the default role "
-                              f"{role.name} in guild {guild.name}")
+                if 'default' in guildRoles[guild.id]:
+                    if not (role := guild.get_role(guildRoles[guild.id]['default'])):
+                        print(f"Error: Role {guildRoles[guild.id]['default']} not found for {guild.name}")
+                        logger.error("Error: Role {guildRoles[guild.id]['default']} not found for {guild.name}")
+                    else:
+                        if member.top_role.position < role.position:
+                            print(f"Error: Bot role has to be higher then the default role "
+                                  f"{role.name} in guild {guild.name}")
+                            logger.error("Error: Bot role has to be higher then the default role "
+                                         f"{role.name} in guild {guild.name}")
 
     print("Ready")
     game = discord.Game(name="https://github.com/GermanHydrogen/Discord-Save-Ping")
@@ -120,6 +119,7 @@ async def on_member_join(member):
                 log += str(e)
                 logger.error(log)
                 raise e
+
 
 client.add_cog(User(client, pingPair, logger))
 client.add_cog(Moderation(client, pingPair, guildRoles))
