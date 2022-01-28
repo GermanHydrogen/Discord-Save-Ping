@@ -46,5 +46,3 @@ class User(commands.Cog, name='User Commands'):
                 await ctx.respond(ctx.author.mention + " You can't mention this role", delete_after=5)
         else:
             await ctx.respond(ctx.author.mention + " Role not Found", delete_after=5)
-
-        # await ctx.message.delete()

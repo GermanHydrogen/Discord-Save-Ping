@@ -12,7 +12,7 @@ class Management(commands.Cog, name='Admin Commands'):
         self.pingPair = pingpair
         self.guildRoles = guildroles
 
-    @slash_command(guild_ids=[621724759645749258], default_permission=False)
+    @slash_command(default_permission=False)
     @permissions.is_owner()
     async def default_role(self, ctx):
         """Returns set default role"""
@@ -32,7 +32,7 @@ class Management(commands.Cog, name='Admin Commands'):
             except:
                 await ctx.respond(ctx.author.mention + "There is no default role defined for this guild.")
 
-    @slash_command(guild_ids=[621724759645749258], default_permission=False)
+    @slash_command(default_permission=False)
     @permissions.is_owner()
     async def set_default_role(self, ctx, role: Option(Role, "Role")):
         """Sets the default role."""
@@ -51,7 +51,7 @@ class Management(commands.Cog, name='Admin Commands'):
                           str(guild.get_role(
                               self.guildRoles[guild.id]['default']).name) + " is now the default role.")
 
-    @slash_command(guild_ids=[621724759645749258], default_permission=False)
+    @slash_command(default_permission=False)
     @permissions.is_owner()
     async def del_default_role(self, ctx):
         """Deletes the default role."""
@@ -64,7 +64,7 @@ class Management(commands.Cog, name='Admin Commands'):
                     writeGuildRoles(self.guildRoles)
         await ctx.respond(ctx.author.mention + " The default role was deleted.")
 
-    @slash_command(guild_ids=[621724759645749258], default_permission=False)
+    @slash_command(default_permission=False)
     @permissions.is_owner()
     async def add_rule(self, ctx, role_1: Option(Role, "role"),
                        relation: Option(str, "relation", choices=["->", "<->", "<-"]),
@@ -111,7 +111,7 @@ class Management(commands.Cog, name='Admin Commands'):
                                                                                     role_2.name,
                                                                                     role_2.id))
 
-    @slash_command(guild_ids=[621724759645749258], default_permission=False)
+    @slash_command(default_permission=False)
     @permissions.is_owner()
     async def add_moderator_role(self, ctx, role: Option(Role, "role")):
         """Set Moderator-Role (needed for $members and $printRules)"""
@@ -132,7 +132,7 @@ class Management(commands.Cog, name='Admin Commands'):
             [guild.get_role(x).name for x in
              self.guildRoles[guild.id]['moderator']]) + " are now the moderator roles.")
 
-    @slash_command(guild_ids=[621724759645749258], default_permission=False)
+    @slash_command(default_permission=False)
     @permissions.is_owner()
     async def remove_moderator_role(self, ctx, role: Option(Role, "role")):
         """Remove Moderator-Role (needed for $members and $printRules)"""

@@ -12,7 +12,7 @@ class Moderation(commands.Cog, name='Moderation Commands'):
         self.pingPair = pingPair
         self.moderatorRoles = guildroles
 
-    @slash_command(guild_ids=[621724759645749258])
+    @slash_command()
     async def print_rules(self, ctx):
         """Shows all ping rules for this guild'"""
         guild = ctx.guild
@@ -36,7 +36,7 @@ class Moderation(commands.Cog, name='Moderation Commands'):
 
         await ctx.respond(embed=embed)
 
-    @slash_command(guild_ids=[621724759645749258])
+    @slash_command()
     async def members(self, ctx, role: Option(Role, "Role")):
         """Shows all members of a role"""
 
