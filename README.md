@@ -3,47 +3,45 @@ A simple Discord Bot with a save reworked ping system. It's using the discord.py
 <br>
 This bot is part of the german multi-gaming discord community Rosenrudel: https://discord.gg/ep8FcXT
 
-## Usage
-In this guide, the standard command prefix '$' is used.
-This can be changed in the config file.
+## Usage (Slash Commands)
 ### User Level
 #### Ping
-`$ping [role]` pings the given role.
+`/ping [role]` pings the given role.
 
 The roles, which are pingable from which role is determined by
 the configuration taken by the admin with `addRule`
 
 ### Moderator Level
 #### Member
-`$members [role]` gives a member list of the given role.
+`/members [role]` gives a member list of the given role.
 
 ----
 #### Print Rules
-`$printRules` gives all rules which where input by the admin with `addRule`
+`/printRules` gives all rules which where input by the admin with `addRule`
 
 ### Admin Level
 #### Set Moderator Role
-`$addModeratorRole [role]` sets the moderator role, which is required to use the moderator level commands. The default role name for the moderator role is 'moderator'.
+`/addModeratorRole [role]` sets the moderator role, which is required to use the moderator level commands. The default role name for the moderator role is 'moderator'.
 
 ----
 
 #### Remove Moderator Role
-`$removeModeratorRole [role]` removes a moderator role from the system.
+`/removeModeratorRole [role]` removes a moderator role from the system.
 
 ----
 
 #### Add Rule
-`$addRule [role] [relation] [role]` enables pings for the given configuration.
+`/addRule [role] [relation] [role]` enables pings for the given configuration.
 
 `[relation]` can be `->`, `<-`, `<->`
 
 #### Set Default Role
-`$setDefaultRole [role]` sets a default role. If no role name is given, the default role is deleted.
+`/setDefaultRole [role]` sets a default role. If no role name is given, the default role is deleted.
 
 #### Display Default Role
-`$defaultRole` returns the current default role.
+`/defaultRole` returns the current default role.
 
 ##### Example
-- `$addRule @Helper -> @Beginner`, enables the ping command for @Helper to ping @Beginner
-- `$addRule @Helper <- @Beginner`, enables the ping command for @Beginners to ping @Helper
-- `$addRule @Helper <-> @Beginner`, enables the ping command for both to ping each other
+- `/addRule @Helper -> @Beginner`, enables the ping command for @Helper to ping @Beginner
+- `/addRule @Helper <- @Beginner`, enables the ping command for @Beginners to ping @Helper
+- `/addRule @Helper <-> @Beginner`, enables the ping command for both to ping each other
