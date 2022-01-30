@@ -65,24 +65,22 @@ async def on_ready():
 
 
 @client.event
-async def on_command_error(ctx, error):
-    if ctx.message.channel != "DMChannel" and ctx.message.channel != "GroupChannel":
-        await ctx.message.delete()
-
-    if isinstance(error, commands.errors.MissingRole) or isinstance(error, commands.errors.MissingPermissions):
-        await ctx.message.channel.send(ctx.message.author.mention + " You don't have sufficient permissions!",
+async def on_application_command_error(ctx, error):
+    print(type(error))
+    if isinstance(error.original, commands.errors.MissingRole) or isinstance(error.original, commands.errors.MissingPermissions):
+        await ctx.respond(ctx.author.mention + " You don't have sufficient permissions!",
                                        delete_after=5)
-    elif isinstance(error, commands.errors.MissingRequiredArgument):
-        await ctx.message.channel.send(ctx.message.author.mention + " Missing parameters!",
+    elif isinstance(error.original, commands.errors.MissingRequiredArgument):
+        await ctx.respond(ctx.author.mention + " Missing parameters!",
                                        delete_after=5)
     else:
-        await ctx.send(ctx.message.author.mention + " Command not found! Check **!help** for all commands",
+        await ctx.respond(ctx.author.mention + " An error occurred, please contact your local admin.",
                        delete_after=5)
 
-    log = "Guild: " + str(ctx.message.guild.name).ljust(20) + "\t"
-    log += "User: " + str(ctx.message.author).ljust(20) + "\t"
-    log += "Channel:" + str(ctx.message.channel).ljust(20) + "\t"
-    log += "Command: " + str(ctx.message.content).ljust(20) + "\t"
+    log = "Guild: " + str(ctx.guild.name).ljust(20) + "\t"
+    log += "User: " + str(ctx.author).ljust(20) + "\t"
+    log += "Channel:" + str(ctx.channel).ljust(20) + "\t"
+    log += "Command: " + str(ctx.command).ljust(20) + "\t"
     log += str(error)
 
     logger.error(log)

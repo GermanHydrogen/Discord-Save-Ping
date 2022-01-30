@@ -18,7 +18,7 @@ class Moderation(commands.Cog, name='Moderation Commands'):
         guild = ctx.guild
         # Check Permission
         if not check_moderator(ctx.author, guild.id, self.moderatorRoles):
-            raise commands.errors.MissingRole
+            raise commands.errors.MissingPermissions(['owner'])
 
         if self.pingPair is None or guild.id not in self.pingPair.keys():
             await ctx.respond(
@@ -43,7 +43,7 @@ class Moderation(commands.Cog, name='Moderation Commands'):
         guild = ctx.guild
         # Check Permission
         if not check_moderator(ctx.author, guild.id, self.moderatorRoles):
-            raise commands.errors.MissingRole
+            raise commands.errors.MissingPermissions(['owner'])
 
         user = "\n".join(x.name + '#' + x.discriminator + "\t" + x.mention for x in role.members)
         embed = discord.Embed(title="Members of **" + role.name + "**", type='article', color=role.colour,
