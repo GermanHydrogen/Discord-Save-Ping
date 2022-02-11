@@ -29,7 +29,8 @@ class User(commands.Cog, name='User Commands'):
                 try:
                     await match.edit(mentionable=True)
                     try:
-                        await ctx.respond(match.mention)
+                        await ctx.send(match.mention)
+                        await ctx.respond('Done', delete_after=3)
                         log = "Guild: " + str(ctx.guild.name).ljust(20) + "\t"
                         log += "User: " + str(ctx.author).ljust(20) + "\t"
                         log += "Channel:" + str(ctx.channel).ljust(20) + "\t"
