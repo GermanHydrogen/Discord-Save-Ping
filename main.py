@@ -88,36 +88,6 @@ async def on_application_command_error(ctx, error):
     raise error
 
 
-@client.event
-async def on_member_join(member):
-    guild = member.guild
-    logger.info(f"{member.name} in guild {guild.name} has joined.")
-    if guildRoles is None:
-        pass
-    elif guild.id not in guildRoles.keys():
-        pass
-    elif 'default' not in guildRoles[guild.id].keys():
-        pass
-    else:
-        role = guild.get_role(guildRoles[guild.id]['default'])
-        if role is None:
-            logger.error(f"Role {guildRoles[guild.id]['default']} in guild {guild.name} not found.")
-        else:
-            try:
-                await member.add_roles(role)
-                log = "Guild: " + str(guild.name).ljust(20) + "\t"
-                log += "Role: " + str(role.name).ljust(20) + "\t"
-                log += "User: " + str(member.display_name).ljust(20) + "\t"
-                log += "Added Role succesfully"
-
-                logger.info(log)
-
-            except discord.Forbidden and discord.HTTPException as e:
-                log = f"Adding Role failed for guild {guild.name} and role {guild.name}" + "\t"
-                log += str(e)
-                logger.error(log)
-                raise e
-
 
 client.add_cog(User(client, pingPair, logger))
 client.add_cog(Moderation(client, pingPair, guildRoles))
