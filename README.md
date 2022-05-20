@@ -35,12 +35,6 @@ the configuration taken by the admin with `addRule`
 
 `[relation]` can be `->`, `<-`, `<->`
 
-#### Set Default Role
-`/setDefaultRole [role]` sets a default role. If no role name is given, the default role is deleted.
-
-#### Display Default Role
-`/defaultRole` returns the current default role.
-
 ##### Example
 - `/addRule @Helper -> @Beginner`, enables the ping command for @Helper to ping @Beginner
 - `/addRule @Helper <- @Beginner`, enables the ping command for @Beginners to ping @Helper
