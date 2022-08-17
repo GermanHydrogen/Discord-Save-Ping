@@ -1,3 +1,4 @@
+import discord
 from discord import slash_command, Option
 from discord.commands import permissions
 from discord.ext import commands
@@ -13,7 +14,7 @@ class Management(commands.Cog, name='Admin Commands'):
         self.guildRoles = guildroles
 
     @slash_command(default_permission=False)
-    @permissions.is_owner()
+    @discord.default_permissions(administrator=True)
     async def add_rule(self, ctx, role_1: Option(Role, "role"),
                        relation: Option(str, "relation", choices=["->", "<->", "<-"]),
                        role_2: Option(Role, "role") = None):
@@ -60,7 +61,7 @@ class Management(commands.Cog, name='Admin Commands'):
                                                                                     role_2.id))
 
     @slash_command(default_permission=False)
-    @permissions.is_owner()
+    @discord.default_permissions(administrator=True)
     async def add_moderator_role(self, ctx, role: Option(Role, "role")):
         """Set Moderator-Role (needed for $members and $printRules)"""
         guild = ctx.guild
@@ -81,7 +82,7 @@ class Management(commands.Cog, name='Admin Commands'):
              self.guildRoles[guild.id]['moderator']]) + " are now the moderator roles.")
 
     @slash_command(default_permission=False)
-    @permissions.is_owner()
+    @discord.default_permissions(administrator=True)
     async def remove_moderator_role(self, ctx, role: Option(Role, "role")):
         """Remove Moderator-Role (needed for $members and $printRules)"""
 
