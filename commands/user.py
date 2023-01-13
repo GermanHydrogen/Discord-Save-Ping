@@ -49,9 +49,10 @@ class User(commands.Cog, name='User Commands'):
             await ctx.respond(ctx.author.mention + " Role not Found", delete_after=5)
 
     @slash_command()
-    async def vc_ping(self, ctx):
+    async def ping_vc(self, ctx):
         """Ping all members of your voice channel"""
-        if ctx.author.voice.channel is None:
-            await ctx.respond("You have to be in a voicechannel for this command to work!", delete_after=5)
+        if ctx.author.voice is None:
+            await ctx.respond("You have to be in a voice channel for this command to work!", delete_after=5)
+            return
 
         await ctx.respond(" ".join([x.mention for x in ctx.author.voice.channel.members]))
